@@ -1,0 +1,516 @@
+openapi: 3.0.0
+info:
+  title: Soccer Match Tracker API
+  version: 1.0.0
+  description: API documentation for the Soccer Match Tracker project.
+
+servers:
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: Create a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin1
+                email:
+                  type: string
+                  example: admin@example.com
+                password:
+                  type: string
+                  example: Password123!
+                role:
+                  type: string
+                  example: ADMIN
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Missing required fields
+        '409':
+          description: Email already in use
+
+  /api/auth/login:
+    post:
+      summary: Log in and get a JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: admin@example.com
+                password:
+                  type: string
+                  example: Password123!
+      responses:
+        '200':
+          description: Login successful
+        '400':
+          description: Missing email or password
+        '401':
+          description: Invalid email or password
+
+  /api/teams:
+    get:
+      summary: Get all teams
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: A list of teams
+    post:
+      summary: Create a new team
+      tags:
+        - Teams
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - city
+                - coachName
+              properties:
+                name:
+                  type: string
+                  example: Charlotte FC
+                city:
+                  type: string
+                  example: Charlotte
+                coachName:
+                  type: string
+                  example: Dean Smith
+      responses:
+        '201':
+          description: Team created successfully
+        '400':
+          description: Missing required fields
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+
+  /api/teams/{id}:
+    get:
+      summary: Get a team by ID
+      tags:
+        - Teams
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Team found
+        '400':
+          description: Invalid ID
+        '404':
+          description: Team does not exist
+    put:
+      summary: Update a team by ID
+      tags:
+        - Teams
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - city
+                - coachName
+              properties:
+                name:
+                  type: string
+                  example: Charlotte FC
+                city:
+                  type: string
+                  example: Charlotte
+                coachName:
+                  type: string
+                  example: Hector V
+      responses:
+        '200':
+          description: Team updated successfully
+        '400':
+          description: Invalid ID or missing fields
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Team does not exist
+    delete:
+      summary: Delete a team by ID
+      tags:
+        - Teams
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Team deleted successfully
+        '400':
+          description: Invalid ID
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Team does not exist
+
+  /api/players:
+    get:
+      summary: Get all players
+      tags:
+        - Players
+      responses:
+        '200':
+          description: A list of players
+    post:
+      summary: Create a new player
+      tags:
+        - Players
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - position
+                - jerseyNumber
+                - age
+                - teamId
+              properties:
+                name:
+                  type: string
+                  example: Wilfried Zaha
+                position:
+                  type: string
+                  example: Forward
+                jerseyNumber:
+                  type: integer
+                  example: 10
+                age:
+                  type: integer
+                  example: 31
+                teamId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Player created successfully
+        '400':
+          description: Missing required fields
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Team does not exist
+        '409':
+          description: Jersey number already exists on this team
+
+  /api/players/{id}:
+    get:
+      summary: Get a player by ID
+      tags:
+        - Players
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Player found
+        '400':
+          description: Invalid ID
+        '404':
+          description: Player does not exist
+    put:
+      summary: Update a player by ID
+      tags:
+        - Players
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - position
+                - jerseyNumber
+                - age
+                - teamId
+              properties:
+                name:
+                  type: string
+                  example: Wilfried Zaha
+                position:
+                  type: string
+                  example: Forward
+                jerseyNumber:
+                  type: integer
+                  example: 10
+                age:
+                  type: integer
+                  example: 32
+                teamId:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Player updated successfully
+        '400':
+          description: Invalid ID or missing fields
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Player does not exist
+        '409':
+          description: Jersey number already exists on this team
+    delete:
+      summary: Delete a player by ID
+      tags:
+        - Players
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Player deleted successfully
+        '400':
+          description: Invalid ID
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Player does not exist
+
+  /api/matches:
+    get:
+      summary: Get all matches
+      tags:
+        - Matches
+      responses:
+        '200':
+          description: A list of matches
+    post:
+      summary: Create a new match
+      tags:
+        - Matches
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - homeTeamId
+                - awayTeamId
+                - matchDate
+                - location
+              properties:
+                homeTeamId:
+                  type: integer
+                  example: 1
+                awayTeamId:
+                  type: integer
+                  example: 2
+                matchDate:
+                  type: string
+                  example: 2026-04-22
+                location:
+                  type: string
+                  example: Bank of America Stadium
+                homeScore:
+                  type: integer
+                  example: 2
+                awayScore:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Match created successfully
+        '400':
+          description: Missing required fields or same team selected
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: One or both teams do not exist
+
+  /api/matches/{id}:
+    get:
+      summary: Get a match by ID
+      tags:
+        - Matches
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Match found
+        '400':
+          description: Invalid ID
+        '404':
+          description: Match does not exist
+    put:
+      summary: Update a match by ID
+      tags:
+        - Matches
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                homeTeamId:
+                  type: integer
+                  example: 1
+                awayTeamId:
+                  type: integer
+                  example: 2
+                matchDate:
+                  type: string
+                  example: 2026-04-22
+                location:
+                  type: string
+                  example: Bank of America Stadium
+                homeScore:
+                  type: integer
+                  example: 3
+                awayScore:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Match updated successfully
+        '400':
+          description: Invalid ID or missing fields
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Match does not exist
+    delete:
+      summary: Delete a match by ID
+      tags:
+        - Matches
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Match deleted successfully
+        '400':
+          description: Invalid ID
+        '401':
+          description: User is not authenticated
+        '403':
+          description: User is not authorized
+        '404':
+          description: Match does not exist
