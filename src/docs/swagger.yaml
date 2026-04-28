@@ -5,7 +5,7 @@ info:
   description: API documentation for the Soccer Match Tracker project.
 
 servers:
-  - url: http://localhost:3000
+  - url: https://final-project-repo-x7xw.onrender.com
 
 components:
   securitySchemes:
