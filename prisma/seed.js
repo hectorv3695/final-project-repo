@@ -4,6 +4,10 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.match.deleteMany();
+  await prisma.player.deleteMany();
+  await prisma.team.deleteMany();
+  await prisma.user.deleteMany();
   const passwordHash = await bcrypt.hash('Password123!', 10);
 
   const admin = await prisma.user.upsert({
