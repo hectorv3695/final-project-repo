@@ -17,7 +17,7 @@ async function main() {
     },
   });
 
-  // Teams
+  
   const charlotte = await prisma.team.create({
     data: {
       name: 'Charlotte FC',
@@ -54,7 +54,7 @@ async function main() {
     },
   });
 
-  // Players
+  
   await prisma.player.createMany({
     data: [
       {
@@ -92,7 +92,7 @@ async function main() {
     ],
   });
 
-  // Matches
+  
   await prisma.match.createMany({
     data: [
       {
